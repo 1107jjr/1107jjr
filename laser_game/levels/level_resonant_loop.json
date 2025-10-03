@@ -1,0 +1,20 @@
+{
+  "name": "Resonant Loop",
+  "difficulty": "Expert",
+  "width": 9,
+  "height": 9,
+  "emitters": [
+    {"position": [0, 4], "direction": "EAST", "energy": 16},
+    {"position": [8, 4], "direction": "WEST", "energy": 16}
+  ],
+  "targets": [
+    {"position": [4, 4], "required_energy": 2, "label": "Core Resonator"},
+    {"position": [6, 2], "required_energy": 1, "label": "Upper Array"},
+    {"position": [5, 6], "required_energy": 1, "label": "Lower Array"}
+  ],
+  "energy_fields": [
+    {"position": [4, 2], "drain": 2, "color": "cyan"},
+    {"position": [4, 6], "drain": 2, "color": "cyan"},
+    {"position": [6, 4], "drain": 1, "color": "violet"}
+  ]
+}
