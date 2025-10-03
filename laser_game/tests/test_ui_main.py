@@ -8,6 +8,7 @@ from laser_game.ui.main import (
     ASSET_ENV_VAR,
     LEVEL_ENV_VAR,
     UIDirectories,
+    bootstrap_directories,
     main,
     resolve_directories,
 )
@@ -47,10 +48,18 @@ def test_resolve_directories_errors_on_missing_paths(tmp_path: Path, monkeypatch
         resolve_directories()
 
 
-def test_main_prints_message(capsys: pytest.CaptureFixture[str]):
-    directories = main()
+def test_bootstrap_prints_message(capsys: pytest.CaptureFixture[str]):
+    directories = bootstrap_directories()
     output = capsys.readouterr().out
 
     assert "Laser Game UI bootstrap" in output
     assert str(directories.asset_root) in output
     assert str(directories.level_root) in output
+
+
+def test_cli_lists_levels(capsys: pytest.CaptureFixture[str]):
+    exit_code = main(["--list-levels"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert "Available levels" in output
