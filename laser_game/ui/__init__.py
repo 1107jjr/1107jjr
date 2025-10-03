@@ -1,3 +1,8 @@
+"""User interface package for the laser game."""
+
+from .main import LaserGameApp, run
+
+__all__ = ["LaserGameApp", "run"]
 """User interface helpers for the Laser Game package."""
 
 from .main import LaserGameUI, run
