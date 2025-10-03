@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -9,6 +10,57 @@ from typing import Dict, List, Optional, Tuple
 import pygame
 
 from ..game import BeamSegment, Direction, LaserGame, Level, LevelLoader, Mirror
+
+ASSET_ENV_VAR = "LASER_GAME_ASSET_ROOT"
+LEVEL_ENV_VAR = "LASER_GAME_LEVEL_ROOT"
+
+
+@dataclass(frozen=True)
+class UIDirectories:
+    """Bundle with resolved directories required by the UI."""
+
+    asset_root: Path
+    level_root: Path
+
+
+def _default_asset_root() -> Path:
+    return Path(__file__).resolve().parents[1] / "assets"
+
+
+def _default_level_root() -> Path:
+    return Path(__file__).resolve().parents[1] / "levels"
+
+
+def _read_directory(env_var: str, fallback: Path) -> Path:
+    value = os.environ.get(env_var)
+    if value:
+        return Path(value).expanduser()
+    return fallback
+
+
+def resolve_directories(check_exists: bool = True) -> UIDirectories:
+    """Resolve UI directories using environment variables.
+
+    Parameters
+    ----------
+    check_exists:
+        When *True*, raise :class:`FileNotFoundError` if a resolved directory does
+        not exist on disk. Disable this in contexts where you want to inspect the
+        chosen paths without touching the filesystem.
+    """
+
+    asset_root = _read_directory(ASSET_ENV_VAR, _default_asset_root())
+    level_root = _read_directory(LEVEL_ENV_VAR, _default_level_root())
+
+    if check_exists:
+        missing = [path for path in (asset_root, level_root) if not path.exists()]
+        if missing:
+            missing_str = ", ".join(str(path) for path in missing)
+            raise FileNotFoundError(
+                f"Required UI resource directories do not exist: {missing_str}"
+            )
+
+    return UIDirectories(asset_root=asset_root, level_root=level_root)
 
 
 @dataclass
@@ -20,7 +72,10 @@ class GridGeometry:
 
     def cell_to_topleft(self, cell: Tuple[int, int]) -> Tuple[int, int]:
         x, y = cell
-        return (self.origin[0] + x * self.cell_size, self.origin[1] + y * self.cell_size)
+        return (
+            self.origin[0] + x * self.cell_size,
+            self.origin[1] + y * self.cell_size,
+        )
 
     def cell_to_center(self, cell: Tuple[int, int]) -> Tuple[int, int]:
         top_left = self.cell_to_topleft(cell)
@@ -40,14 +95,20 @@ class LaserGameApp:
     target_color = (120, 255, 140)
     mirror_color = (240, 240, 240)
 
-    def __init__(self, screen_size: Tuple[int, int] = (960, 720)) -> None:
+    def __init__(
+        self,
+        screen_size: Tuple[int, int] = (960, 720),
+        *,
+        directories: Optional[UIDirectories] = None,
+    ) -> None:
         pygame.init()
         pygame.display.set_caption("Laser Game")
         self.screen = pygame.display.set_mode(screen_size)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("arial", 18)
 
-        self.level_loader = LevelLoader(Path(__file__).resolve().parents[1] / "levels")
+        self.directories = directories or resolve_directories()
+        self.level_loader = LevelLoader(self.directories.level_root)
         self.level_names: List[str] = sorted(
             [path.stem for path in self.level_loader.root.glob("*.json")]
         )
@@ -78,6 +139,8 @@ class LaserGameApp:
     def cycle_level(self, direction: int) -> None:
         """Advance the level index and load the new level."""
 
+        if not self.level_names:
+            return
         self.level_index = (self.level_index + direction) % len(self.level_names)
         self.load_level(self.level_names[self.level_index])
 
@@ -90,7 +153,11 @@ class LaserGameApp:
         metadata = self.playthrough.get("metadata", {})
         title = "Laser Game"
         if metadata:
-            title = f"Laser Game - {metadata.get('name', 'Unknown')} ({metadata.get('difficulty', '???')})"
+            title = (
+                "Laser Game - "
+                f"{metadata.get('name', 'Unknown')} "
+                f"({metadata.get('difficulty', '???')})"
+            )
         pygame.display.set_caption(title)
         self.geometry = self._compute_geometry()
         self._needs_update = False
@@ -103,7 +170,10 @@ class LaserGameApp:
         available_w = max(width - padding * 2, 100)
         available_h = max(height - padding * 2, 100)
         cell_size = int(
-            min(available_w / max(self.level.width, 1), available_h / max(self.level.height, 1))
+            min(
+                available_w / max(self.level.width, 1),
+                available_h / max(self.level.height, 1),
+            )
         )
         cell_size = max(cell_size, 20)
         total_w = cell_size * self.level.width
@@ -158,7 +228,12 @@ class LaserGameApp:
         assert self.level and self.geometry
         for emitter in self.level.emitters:
             center = self.geometry.cell_to_center(emitter.position)
-            pygame.draw.circle(self.screen, self.emitter_color, center, self.geometry.cell_size // 3)
+            pygame.draw.circle(
+                self.screen,
+                self.emitter_color,
+                center,
+                self.geometry.cell_size // 3,
+            )
 
     def _draw_targets(self) -> None:
         assert self.level and self.geometry
@@ -179,7 +254,13 @@ class LaserGameApp:
                 start[1] + self.geometry.cell_size,
             )
             if mirror.orientation == "/":
-                pygame.draw.line(self.screen, self.mirror_color, (start[0], end[1]), (end[0], start[1]), 3)
+                pygame.draw.line(
+                    self.screen,
+                    self.mirror_color,
+                    (start[0], end[1]),
+                    (end[0], start[1]),
+                    3,
+                )
             else:
                 pygame.draw.line(self.screen, self.mirror_color, start, end, 3)
 
@@ -222,7 +303,9 @@ class LaserGameApp:
                 elif event.button == 3:
                     self._remove_mirror(grid_position)
 
-    def _position_from_mouse(self, position: Tuple[int, int]) -> Optional[Tuple[int, int]]:
+    def _position_from_mouse(
+        self, position: Tuple[int, int]
+    ) -> Optional[Tuple[int, int]]:
         if not self.geometry or not self.level:
             return None
         x, y = position
@@ -298,68 +381,6 @@ def run() -> None:
 
     app = LaserGameApp()
     app.run()
-
-
-if __name__ == "__main__":
-    run()
-"""Entry point helpers for the optional Laser Game UI."""
-
-from __future__ import annotations
-
-import os
-from dataclasses import dataclass
-from pathlib import Path
-
-ASSET_ENV_VAR = "LASER_GAME_ASSET_ROOT"
-LEVEL_ENV_VAR = "LASER_GAME_LEVEL_ROOT"
-
-
-@dataclass(frozen=True)
-class UIDirectories:
-    """Bundle with resolved directories required by the UI."""
-
-    asset_root: Path
-    level_root: Path
-
-
-def _default_asset_root() -> Path:
-    return Path(__file__).resolve().parents[1] / "assets"
-
-
-def _default_level_root() -> Path:
-    return Path(__file__).resolve().parents[1] / "levels"
-
-
-def _read_directory(env_var: str, fallback: Path) -> Path:
-    value = os.environ.get(env_var)
-    if value:
-        return Path(value).expanduser()
-    return fallback
-
-
-def resolve_directories(check_exists: bool = True) -> UIDirectories:
-    """Resolve UI directories using environment variables.
-
-    Parameters
-    ----------
-    check_exists:
-        When *True*, raise :class:`FileNotFoundError` if a resolved directory does
-        not exist on disk. Disable this in contexts where you want to inspect the
-        chosen paths without touching the filesystem.
-    """
-
-    asset_root = _read_directory(ASSET_ENV_VAR, _default_asset_root())
-    level_root = _read_directory(LEVEL_ENV_VAR, _default_level_root())
-
-    if check_exists:
-        missing = [path for path in (asset_root, level_root) if not path.exists()]
-        if missing:
-            missing_str = ", ".join(str(path) for path in missing)
-            raise FileNotFoundError(
-                f"Required UI resource directories do not exist: {missing_str}"
-            )
-
-    return UIDirectories(asset_root=asset_root, level_root=level_root)
 
 
 def main() -> UIDirectories:
