@@ -33,6 +33,29 @@ python -m laser_game.demo
 
 Die Demo lädt `level_intro`, wendet die hinterlegte Mustersolution an und gibt die Energieverteilung sowie die simulierten Strahlsegmente aus. Diese Ausgabe eignet sich hervorragend als Basis für Debugging, Telemetrie oder UI-Overlays.
 
+### UI-Start
+
+Die optionale Desktop-Oberfläche benötigt zusätzlich zu den Kernabhängigkeiten ein SDL-Backend:
+
+```bash
+pip install pygame python-dotenv
+```
+
+Konfiguriere anschließend die Pfade für Assets und Level-Dateien. Standardmäßig nutzt die UI die paketinternen Verzeichnisse, über Umgebungsvariablen kannst du jedoch eigene Inhalte laden:
+
+```bash
+export LASER_GAME_ASSET_ROOT="$(pwd)/laser_game/assets"
+export LASER_GAME_LEVEL_ROOT="$(pwd)/laser_game/levels"
+```
+
+Das Setzen dieser Variablen lässt sich bequem in einer `.env`-Datei speichern und über `python-dotenv` einlesen. Danach startest du die Oberfläche per:
+
+```bash
+python -m laser_game.ui.main
+```
+
+Beim Start werden die aufgelösten Verzeichnisse im Terminal ausgegeben. Weisen sie auf eigene Pfade, kannst du ohne weitere Konfigurationsschritte an eigenen Assets oder Leveln arbeiten.
+
 ## Steuerungskonzept für eine UI
 
 Die Logik ist so aufgebaut, dass ein modernes Interface (z. B. mit Pygame, pyglet oder einer WebCanvas-Engine) lediglich folgende Interaktionen abbilden muss:
@@ -41,6 +64,12 @@ Die Logik ist so aufgebaut, dass ein modernes Interface (z. B. mit Pygame, pyg
 2. **Platzierung von Elementen**: Mirrors, Prismen und Energiefelder werden als Platzierungen mit Position, Typ und Parameter (`orientation`, `spread`, `drain`) injiziert.
 3. **Simulation auslösen** mittels `LaserGame.propagate()` und Visualisierung der zurückgegebenen Strahlsegmente (`BeamSegment`).
 4. **Erfolgsprüfung** via `LaserGame.level_complete()` bzw. `SolutionValidator.validate()` für Mustersolutions oder Nutzerlösungen.
+
+### Interaktionsabläufe
+
+- **Platzieren**: Klone das `Level` (z. B. per `copy.deepcopy`) oder arbeite mit einem transaktionalen State-Objekt, ergänze das jeweilige Dict (`mirrors`, `prisms`, `energy_fields`) und triggere direkt im Anschluss `propagate()`, um das Feedback zu visualisieren.
+- **Undo**: Bewahre den Zustand der Platzierungs-Queue auf (z. B. als Stack) und nutze `LevelLoader.load()` in Kombination mit den verbliebenen Platzierungen, um eine konsistente Rücknahme zu gewährleisten.
+- **Levelwechsel**: Räume vor dem Laden eines neuen Levels sämtliche temporären Objekte, setze deine UI-State-Maschine zurück und initialisiere die `LaserGame`-Instanz erneut. So verhinderst du, dass Strahlsegmente oder Zielenergien des vorherigen Levels sichtbar bleiben.
 
 ## Level-Format
 
@@ -104,6 +133,20 @@ pytest laser_game/tests
 ```
 
 Die Integrationstests laden die echten Level- und Solution-Dateien und sichern so das Zusammenspiel der JSON-Daten mit der Kernlogik.
+
+Für die neue UI-Starthilfe existieren zusätzliche Smoke-Tests (`laser_game/tests/test_ui_main.py`). Führe sie separat aus, wenn du Änderungen am UI-Bootstrap oder den Umgebungsvariablen vornimmst:
+
+```bash
+pytest laser_game/tests/test_ui_main.py
+```
+
+So stellst du sicher, dass lokale Anpassungen an Asset- oder Level-Pfaden weiterhin korrekt aufgelöst werden.
+
+## Beitragshinweise für Assets & Level-JSONs
+
+- **Assets**: Lege neue Grafiken als SVG in `assets/` ab, halte Größe und Ursprung konsistent (Rastergröße 128 px) und dokumentiere Varianten (z. B. aktive/inaktive Ziele) im Dateinamen. Bewahre Rohdaten (z. B. `.afdesign`, `.fig`) außerhalb des Repos auf und exportiere optimierte SVGs ohne unnötige Metadaten.
+- **Level-JSONs**: Verwende sprechende Dateinamen (`level_<thema>.json`), erhöhe die `difficulty`, sobald neue Mechaniken eingeführt werden, und prüfe jede Änderung mit `SolutionValidator.validate()`. Achte darauf, dass Koordinaten integer sind, Zielenergien mit den Mustersolutions übereinstimmen und optionale Felder (`color`, `label`) gepflegt werden.
+- **Validierung**: Ergänze zu neuen Leveln immer eine passende Datei in `solutions/`, aktualisiere betroffene Tests und dokumentiere Besonderheiten (z. B. simultane Ziele) in den Level-Metadaten.
 
 ## Weiterentwicklung
 

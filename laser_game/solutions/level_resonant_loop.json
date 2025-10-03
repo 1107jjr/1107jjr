@@ -1,0 +1,12 @@
+{
+  "placements": [
+    {"type": "prism", "position": [2, 4], "spread": 1},
+    {"type": "mirror", "position": [2, 2], "orientation": "/"},
+    {"type": "mirror", "position": [2, 6], "orientation": "\\"}
+  ],
+  "expected_targets": {
+    "(4, 4)": 2,
+    "(6, 2)": 1,
+    "(5, 6)": 1
+  }
+}
