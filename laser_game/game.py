@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 
 class Direction(Enum):
@@ -204,12 +204,45 @@ class LevelLoader:
         return level
 
 
+def apply_placement_to_level(level: Level, placement: Dict[str, object]) -> None:
+    position = tuple(placement["position"])
+    item_type = placement["type"]
+    if item_type == "mirror":
+        orientation = placement.get("orientation", "/")
+        level.mirrors[position] = Mirror(str(orientation))
+        level.prisms.pop(position, None)
+    elif item_type == "prism":
+        spread = int(placement.get("spread", 1))
+        level.prisms[position] = Prism(spread=spread)
+        level.mirrors.pop(position, None)
+    elif item_type == "energy_field":
+        drain = int(placement.get("drain", 1))
+        color = placement.get("color", "white")
+        level.energy_fields[position] = EnergyField(drain=drain, color=str(color))
+    else:
+        raise ValueError(f"Unknown placement type: {item_type}")
+
+
 class LaserGame:
     """High level game manager handling laser propagation and win conditions."""
 
     def __init__(self, level: Level):
         self.level = level
+        self.pending_placements: List[Dict[str, object]] = []
         self.reset()
+
+    def queue_pending_placements(
+        self, placements: Iterable[Dict[str, object]]
+    ) -> None:
+        for placement in placements:
+            normalized = dict(placement)
+            normalized["position"] = tuple(normalized["position"])
+            self.pending_placements.append(normalized)
+
+    def apply_pending_placements(self) -> None:
+        while self.pending_placements:
+            placement = self.pending_placements.pop(0)
+            apply_placement_to_level(self.level, placement)
 
     def reset(self) -> None:
         self.target_energy: Dict[Tuple[int, int], int] = {
@@ -324,15 +357,7 @@ class SolutionValidator:
     def apply_solution(self, level: Level, solution: Dict) -> Level:
         placements = solution.get("placements", [])
         for placement in placements:
-            position = tuple(placement["position"])
-            if placement["type"] == "mirror":
-                level.mirrors[position] = Mirror(placement.get("orientation", "/"))
-            elif placement["type"] == "prism":
-                level.prisms[position] = Prism(spread=placement.get("spread", 1))
-            elif placement["type"] == "energy_field":
-                level.energy_fields[position] = EnergyField(drain=placement.get("drain", 1))
-            else:
-                raise ValueError(f"Unknown placement type: {placement['type']}")
+            apply_placement_to_level(level, placement)
         return level
 
     def validate(self, level_name: str, solution_name: Optional[str] = None) -> bool:
