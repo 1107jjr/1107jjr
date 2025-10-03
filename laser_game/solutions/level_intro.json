@@ -1,0 +1,9 @@
+{
+  "placements": [
+    {"type": "mirror", "position": [3, 3], "orientation": "/"},
+    {"type": "mirror", "position": [3, 1], "orientation": "/"}
+  ],
+  "expected_targets": {
+    "(4, 1)": 1
+  }
+}
