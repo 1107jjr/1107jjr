@@ -1,0 +1,12 @@
+{
+  "name": "Intro Reflect",
+  "difficulty": "Easy",
+  "width": 6,
+  "height": 6,
+  "emitters": [
+    {"position": [0, 3], "direction": "EAST", "energy": 10}
+  ],
+  "targets": [
+    {"position": [4, 1], "required_energy": 1, "label": "North Node"}
+  ]
+}

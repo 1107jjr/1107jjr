@@ -1,0 +1,24 @@
+{
+  "name": "Prism Dance",
+  "difficulty": "Medium",
+  "width": 8,
+  "height": 8,
+  "emitters": [
+    {"position": [0, 4], "direction": "EAST", "energy": 12}
+  ],
+  "targets": [
+    {"position": [6, 4], "required_energy": 1, "label": "East Core"},
+    {"position": [4, 2], "required_energy": 1, "label": "North Anchor"},
+    {"position": [4, 6], "required_energy": 1, "label": "South Anchor"}
+  ],
+  "prisms": [
+    {"position": [3, 4], "spread": 1}
+  ],
+  "mirrors": [
+    {"position": [4, 3], "orientation": "\\"},
+    {"position": [4, 5], "orientation": "/"}
+  ],
+  "energy_fields": [
+    {"position": [5, 4], "drain": 1, "color": "magenta"}
+  ]
+}
