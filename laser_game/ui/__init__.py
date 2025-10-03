@@ -1,5 +1,17 @@
-"""UI utilities for rendering the laser game."""
+"""User interface helpers for the Laser Game package."""
 
-from . import assets, layout
+from .main import (
+    ASSET_ENV_VAR,
+    LEVEL_ENV_VAR,
+    UIDirectories,
+    main,
+    resolve_directories,
+)
 
-__all__ = ["assets", "layout"]
+__all__ = [
+    "ASSET_ENV_VAR",
+    "LEVEL_ENV_VAR",
+    "UIDirectories",
+    "main",
+    "resolve_directories",
+]
