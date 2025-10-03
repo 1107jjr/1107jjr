@@ -1,0 +1,20 @@
+{
+  "name": "Prism Conflux",
+  "difficulty": "Hard",
+  "width": 8,
+  "height": 7,
+  "emitters": [
+    {"position": [0, 3], "direction": "EAST", "energy": 14}
+  ],
+  "targets": [
+    {"position": [7, 3], "required_energy": 1, "label": "Central Conduit"},
+    {"position": [6, 1], "required_energy": 1, "label": "Northern Relay"},
+    {"position": [6, 5], "required_energy": 1, "label": "Southern Relay"}
+  ],
+  "prisms": [
+    {"position": [3, 3], "spread": 1}
+  ],
+  "energy_fields": [
+    {"position": [5, 3], "drain": 1, "color": "amber"}
+  ]
+}

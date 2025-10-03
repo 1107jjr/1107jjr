@@ -1,0 +1,14 @@
+{
+  "name": "Dual Reflectors",
+  "difficulty": "Medium",
+  "width": 7,
+  "height": 6,
+  "emitters": [
+    {"position": [0, 1], "direction": "EAST", "energy": 8},
+    {"position": [0, 4], "direction": "EAST", "energy": 8}
+  ],
+  "targets": [
+    {"position": [6, 0], "required_energy": 1, "label": "North Beacon"},
+    {"position": [6, 5], "required_energy": 1, "label": "South Beacon"}
+  ]
+}
