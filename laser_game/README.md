@@ -1,13 +1,13 @@
 # Laser Game
 
-Ein modernes Laser-Puzzlespiel mit reflektierenden Spiegeln, aufteilenden Prismen und energiehungrigen Feldern. Dieses Paket bündelt die Spiellogik, Leveldaten, Assets und Tests, sodass du sofort mit dem Bauen einer Desktop- oder Web-Variante starten kannst.
+Ein modernes Laser-Puzzlespiel mit reflektierenden Spiegeln, aufteilenden Prismen, energiehungrigen Feldern und zerstörbaren Hindernissen. Dieses Paket bündelt die Spiellogik, Leveldaten, Assets und Tests – inklusive neuer Bomben-Mechanik, verstellbarer Laserhelligkeit und gepulster Simulation – sodass du sofort mit dem Bauen einer Desktop- oder Web-Variante starten kannst.
 
 ![Modernes UI-Mockup](assets/screenshots/modern_ui_mockup.svg)
 
 ## Inhalt
 
 - `game.py`: Kernlogik für Laserphysik, Levelverwaltung und Lösungskontrolle.
-- `levels/`: JSON-Dateien mit Levelgeometrie, Metadaten und Spezialobjekten.
+- `levels/`: JSON-Dateien mit Levelgeometrie, Metadaten und Spezialobjekten (u. a. `level_bombastic_gauntlet.json`, `level_prismatic_forge.json`, `level_crystal_catacombs.json`, `level_pulse_maelstrom.json`, `level_superluminal_chorus.json`, `level_endless_resonator.json`, `level_cataclysm_chain.json`).
 - `solutions/`: Automatisiert prüfbare Mustersolutions pro Level.
 - `assets/`: SVG-Sprites für Raster, Spiegel, Ziele, UI und Mockups.
 - `tests/`: Unit- und Integrationstests für Spiegelverhalten, Levelabschluss und Solution-Validierung.
@@ -54,14 +54,29 @@ Das Setzen dieser Variablen lässt sich bequem in einer `.env`-Datei speichern u
 python -m laser_game.ui.main
 ```
 
-Beim Start werden die aufgelösten Verzeichnisse im Terminal ausgegeben. Weisen sie auf eigene Pfade, kannst du ohne weitere Konfigurationsschritte an eigenen Assets oder Leveln arbeiten.
+Der Befehl öffnet direkt das interaktive Fenster und blendet vorab die aufgelösten Verzeichnisse im Terminal ein. Möchtest du nur diese Information abfragen, kannst du stattdessen `python -m laser_game.ui.main --info` verwenden.
+
+Beim Start landest du auf dem „Story-Dashboard“. Von dort gelangst du mit `Enter` oder `Leertaste` (bzw. dem Button „Mission starten“) ins eigentliche Spiel.
+
+### Modernes Pulse-Interface
+
+- Raster, Sidebar, Header und Footer sind in Glas-/Neon-Optik gestaltet und wachsen mit der Fenstergröße mit (`F11` schaltet in den Vollbildmodus, Fenster ist über die Ecken frei skalierbar).
+- Die Werkzeugleiste im rechten Panel erlaubt nun das Platzieren von Spiegeln, Splittern (Dual/Triple), Amplifiern und Bomben – alles mit einem Klick. Rechtsklick entfernt existierende Elemente.
+- Pulsanimationen laufen als leuchtende Glows über das Raster, Explosionen haben einen Partikel-Effekt und Ziele leuchten erst, sobald sie real Energie erhalten.
+- Score-, Combo- und Punkte-Historie sitzen im Header; nach einem gewonnenen Level blendet eine Celebration-Folie auf und belohnt dich mit Bonuspunkten.
+- Die Steuerungshilfe blendet sich nach einigen Sekunden automatisch aus und kann jederzeit per `H` wieder eingeblendet werden.
+- `SPACE` startet einen Pulse, `←/→` oder `N/P` wechseln die Level, `F11` toggelt den Vollbildmodus.
+
+- Die Sidebar zeigt farbcodierte Energie-Balken je Ziel und eine Legende der Energiestufen.
+- Neue Partikeleffekte und farbige Pulse-Köpfe visualisieren die aktuelle Energie des Strahls.
+- Spiegelrotationen werden nach einer Platzierung kurz gesperrt; der Footer weist darauf hin (Taste `R` zum Freigeben).
 
 ## Steuerungskonzept für eine UI
 
 Die Logik ist so aufgebaut, dass ein modernes Interface (z. B. mit Pygame, pyglet oder einer WebCanvas-Engine) lediglich folgende Interaktionen abbilden muss:
 
 1. **Level-Auswahl** über die Metadaten (`name`, `difficulty`).
-2. **Platzierung von Elementen**: Mirrors, Prismen und Energiefelder werden als Platzierungen mit Position, Typ und Parameter (`orientation`, `spread`, `drain`) injiziert.
+2. **Platzierung von Elementen**: Mirrors, Splitters, Amplifier, Bomben und Energiefelder werden als Platzierungen mit Position, Typ und Parametern (`orientation`, `pattern`, `multiplier`, `drain`, …) injiziert.
 3. **Simulation auslösen** mittels `LaserGame.propagate()` und Visualisierung der zurückgegebenen Strahlsegmente (`BeamSegment`).
 4. **Erfolgsprüfung** via `LaserGame.level_complete()` bzw. `SolutionValidator.validate()` für Mustersolutions oder Nutzerlösungen.
 
@@ -82,7 +97,7 @@ Jede Leveldatei ist eine JSON-Struktur mit folgenden Feldern:
   "width": 6,
   "height": 6,
   "emitters": [
-    {"position": [0, 3], "direction": "EAST", "energy": 10}
+    {"position": [0, 3], "direction": "EAST", "energy": 10, "brightness": 1.0}
   ],
   "targets": [
     {"position": [4, 1], "required_energy": 1, "label": "North Node"}
@@ -95,16 +110,35 @@ Jede Leveldatei ist eine JSON-Struktur mit folgenden Feldern:
   ],
   "energy_fields": [
     {"position": [5, 4], "drain": 1, "color": "magenta"}
+  ],
+  "obstacles": [
+    {"position": [2, 3], "durability": 2, "destructible": true}
+  ],
+  "bombs": [
+    {"position": [1, 3], "power": 1}
   ]
 }
 ```
 
 - **Positionen** werden im Raster (x, y) angegeben, beginnend bei `(0, 0)` in der oberen linken Ecke.
-- **Emitter** definieren Startposition, Ausrichtung (`NORTH`, `EAST`, `SOUTH`, `WEST`) und die Energiereserve.
+- **Emitter** definieren Startposition, Ausrichtung (`NORTH`, `EAST`, `SOUTH`, `WEST`), die Energiereserve sowie optional die Laserhelligkeit (`brightness`).
 - **Targets** geben an, wie viele Energieeinheiten das Ziel absorbieren muss.
 - **Mirrors** nutzen `"/"` oder `"\\"` zur Orientierung.
 - **Prisms** erzeugen aus einem Strahl mehrere (vorwärts, links, rechts).
 - **Energy Fields** ziehen pro Durchgang `drain` Einheiten ab; ist die Energie aufgebraucht, stoppt der Strahl.
+- **Obstacles** blockieren den Strahl, bis ihre Haltbarkeit (`durability`) durch Bomben oder wiederholte Treffer erschöpft ist.
+- **Bombs** zerstören beim Kontakt Hindernisse innerhalb ihres Radius (`power`) und hinterlassen Explosionseffekte für die UI.
+- **Splitters** (`splitters`) teilen den Puls in mehrere Richtungen – dual, triple oder cross.
+- **Amplifiers** erhöhen die Energie/Intensität (`multiplier`, optional `additive`, `cap`) und ermöglichen Loop-basierte Highscores.
+
+### Neue Levelpakete
+
+Die erweiterten Level (`level_bombastic_gauntlet`, `level_prismatic_forge`, `level_crystal_catacombs`, `level_pulse_maelstrom`, `level_superluminal_chorus`, `level_endless_resonator`, `level_cataclysm_chain`) verlangen gezielten Einsatz von Splittern, Amplifiern und Bomben. Die jeweiligen Lösùungen zeigen Beispiel-Platzierungen, können aber natürlich überboten werden.
+
+- **Endless Resonator**: Kompaktlevel mit Pflicht-Loop, Verstärker-Überladung und klarer Energieskala.
+- **Cataclysm Chain**: Mehrstufiges Bombenszenario, das nacheinander Barrieren sprengt und den Loop zündet.
+
+ (`level_bombastic_gauntlet`, `level_prismatic_forge`, `level_crystal_catacombs`, `level_pulse_maelstrom`, `level_superluminal_chorus`) verlangen gezielten Einsatz von Splittern, Amplifiern und Bomben. Die jeweiligen Lösungen zeigen Beispiel-Platzierungen, können aber natürlich überboten werden.
 
 ## Mustersolutions
 

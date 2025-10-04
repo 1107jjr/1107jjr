@@ -1,12 +1,585 @@
 {
-  "name": "Intro Reflect",
-  "difficulty": "Easy",
-  "width": 6,
-  "height": 6,
-  "emitters": [
-    {"position": [0, 3], "direction": "EAST", "energy": 10}
-  ],
-  "targets": [
-    {"position": [4, 1], "required_energy": 1, "label": "North Node"}
-  ]
+    "name": "Catalyst Corridor",
+    "difficulty": "Hard",
+    "width": 12,
+    "height": 9,
+    "emitters": [
+        {
+            "position": [
+                1,
+                4
+            ],
+            "direction": "EAST",
+            "energy": 24,
+            "brightness": 1.2
+        }
+    ],
+    "targets": [
+        {
+            "position": [
+                11,
+                4
+            ],
+            "required_energy": 1,
+            "label": "Forward Gate"
+        },
+        {
+            "position": [
+                10,
+                2
+            ],
+            "required_energy": 1,
+            "label": "Northern Lattice"
+        },
+        {
+            "position": [
+                10,
+                6
+            ],
+            "required_energy": 1,
+            "label": "Southern Lattice"
+        }
+    ],
+    "energy_fields": [
+        {
+            "position": [
+                8,
+                4
+            ],
+            "drain": 1,
+            "color": "amber"
+        }
+    ],
+    "obstacles": [
+        {
+            "position": [
+                0,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                6,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                7,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                8,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                9,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                10,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                0
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                0,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                6,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                7,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                8,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                9,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                10,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                1
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                0,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                6,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                2
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                3
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                3
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                3
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                3
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                3
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                8,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                9,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                5
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                0,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                6
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                0,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                6,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                7,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                8,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                9,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                10,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                7
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                0,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                1,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                2,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                3,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                4,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                5,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                6,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                7,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                8,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                9,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                10,
+                8
+            ],
+            "durability": 1
+        },
+        {
+            "position": [
+                11,
+                8
+            ],
+            "durability": 1
+        }
+    ],
+    "tool_limits": {
+        "splitter_triple": 1,
+        "mirror": 3,
+        "amplifier": 1
+    }
 }

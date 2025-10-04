@@ -4,38 +4,46 @@
             "type": "amplifier",
             "position": [
                 4,
-                5
+                6
             ],
-            "multiplier": 1.6,
+            "multiplier": 1.8,
             "additive": 0
         },
         {
-            "type": "splitter_cross",
+            "type": "splitter_triple",
+            "position": [
+                5,
+                6
+            ]
+        },
+        {
+            "type": "bomb",
             "position": [
                 7,
-                5
-            ]
+                6
+            ],
+            "power": 2
         },
         {
             "type": "mirror",
             "position": [
-                7,
-                2
+                5,
+                3
             ],
             "orientation": "/"
         },
         {
             "type": "mirror",
             "position": [
-                7,
-                8
+                5,
+                9
             ],
             "orientation": "\\"
         }
     ],
     "expected_targets": {
-        "(11, 5)": 1,
-        "(9, 2)": 1,
-        "(9, 8)": 1
+        "(16, 3)": 1,
+        "(16, 6)": 1,
+        "(16, 9)": 1
     }
 }

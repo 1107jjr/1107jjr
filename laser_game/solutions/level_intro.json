@@ -1,9 +1,40 @@
 {
-  "placements": [
-    {"type": "mirror", "position": [3, 3], "orientation": "/"},
-    {"type": "mirror", "position": [3, 1], "orientation": "/"}
-  ],
-  "expected_targets": {
-    "(4, 1)": 1
-  }
+    "placements": [
+        {
+            "type": "splitter_triple",
+            "position": [
+                7,
+                4
+            ]
+        },
+        {
+            "type": "mirror",
+            "position": [
+                7,
+                3
+            ],
+            "orientation": "/"
+        },
+        {
+            "type": "mirror",
+            "position": [
+                7,
+                6
+            ],
+            "orientation": "\\"
+        },
+        {
+            "type": "mirror",
+            "position": [
+                10,
+                3
+            ],
+            "orientation": "/"
+        }
+    ],
+    "expected_targets": {
+        "(11, 4)": 1,
+        "(10, 2)": 1,
+        "(10, 6)": 1
+    }
 }

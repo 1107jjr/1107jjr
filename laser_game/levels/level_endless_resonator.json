@@ -1,0 +1,389 @@
+{
+    "name": "Endless Resonator",
+    "difficulty": "Expert",
+    "width": 9,
+    "height": 9,
+    "loop_required": true,
+    "min_loop_ticks": 6,
+    "energy_goal": 4,
+    "emitters": [
+        {
+            "position": [
+                3,
+                6
+            ],
+            "direction": "NORTH",
+            "energy": 18,
+            "brightness": 1.2,
+            "emission_interval": 0
+        }
+    ],
+    "targets": [
+        {
+            "position": [
+                3,
+                5
+            ],
+            "required_energy": 1,
+            "label": "Resonanzanker"
+        },
+        {
+            "position": [
+                6,
+                6
+            ],
+            "required_energy": 1,
+            "label": "Kernkoppler"
+        },
+        {
+            "position": [
+                3,
+                7
+            ],
+            "required_energy": 1,
+            "label": "Feedback-Tap"
+        }
+    ],
+    "mirrors": [
+        {
+            "position": [
+                3,
+                5
+            ],
+            "orientation": "/"
+        },
+        {
+            "position": [
+                6,
+                5
+            ],
+            "orientation": "\\"
+        },
+        {
+            "position": [
+                6,
+                7
+            ],
+            "orientation": "/"
+        },
+        {
+            "position": [
+                3,
+                7
+            ],
+            "orientation": "\\"
+        }
+    ],
+    "amplifiers": [
+        {
+            "position": [
+                6,
+                6
+            ],
+            "multiplier": 1.8,
+            "additive": 2
+        }
+    ],
+    "energy_fields": [
+        {
+            "position": [
+                5,
+                6
+            ],
+            "drain": 1,
+            "color": "violet"
+        }
+    ],
+    "obstacles": [
+        {
+            "position": [
+                0,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                1,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                2,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                3,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                4,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                5,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                6,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                7,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                1,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                2,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                3,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                4,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                5,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                6,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                7,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                1
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                2
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                3
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                4
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                5
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                6
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                7
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                0,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                0
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                1
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                2
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                3
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                4
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                5
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                6
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                7
+            ],
+            "durability": 1,
+            "destructible": false
+        },
+        {
+            "position": [
+                8,
+                8
+            ],
+            "durability": 1,
+            "destructible": false
+        }
+    ],
+    "bombs": [],
+    "tool_limits": {}
+}
